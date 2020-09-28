@@ -6,4 +6,6 @@ body {
 table {
 	width: inherit;
 }
-
+pre {
+  text-align: left;
+}
