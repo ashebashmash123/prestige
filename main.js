@@ -38,13 +38,13 @@ function canActivatePrestige(id) {
 
 function activatePrestige(id) {
 	if (canActivatePrestige(id)) {
-		log(`Prestige ${id + 1}`);
-		document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
+		log(`Prestige ${id + 1}`);		
 		data.coins = 0;
 		for (var i = 0; i < id; i++) {
 			data.prestiges[i] = 0;
 		}
 		data.prestiges[id]++;
+		document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
 	}
 	draw();
 }
