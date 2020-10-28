@@ -44,9 +44,9 @@ function activatePrestige(id) {
 			data.prestiges[i] = 0;
 		}
 		data.prestiges[id]++;
+		draw();
 		document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
-	}
-	draw();
+	}	
 }
 
 function update() {
