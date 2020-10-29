@@ -8,3 +8,4 @@ Fork of [Makiki's prestige](https://github.com/makiki99/prestige) with the follo
 1. Prestiges are purchased automatically
 1. Prestige type and time are logged when purchased
 1. Offline time is only spent up until the point of the next prestige becoming available so a more optimal play can be simulated
+1. Every prestige fires a 'prestige' event on document which includes the prestige level on the detail property. You can add an event listener to detect prestiges.
