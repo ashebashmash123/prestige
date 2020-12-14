@@ -99,7 +99,8 @@ function draw() {
 	});
 
   //update total play time
-  const playTime = (new Date()).getTime() - data.startTime;
+  const curDate = new Date();
+  const playTime = curDate.getTime() - data.startTime;
   document.getElementById('playTimeDiv').innerText = 'Total Play Time: ' + timeObjToLongStr(timeToObj(playTime / 1000));
 
   //update time until next nano
@@ -107,6 +108,10 @@ function draw() {
   const gain = getGain();
   const prestigeTime = prestigeRequirement / gain;
   document.getElementById('nextTimeDiv').innerText = 'Next Prestige In: ' + timeObjToLongStr(timeToObj(prestigeTime));
+	
+  //update date of next nano
+  const nextDate = new Date(curDate.getTime() + prestigeTime * 1000);
+  document.getElementById('nextDateDiv').innerText = 'Next Prestige At: ' + nextDate.toString();
 
   //update title bar
   document.title = timeObjToShortStr(timeToObj(prestigeTime));  
