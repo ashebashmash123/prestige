@@ -4,8 +4,8 @@ function reset() {
   data = {
     coins: 0,
     prestiges: [0,0,0,0,0,0,0,0,0,0],
-    savedTime: 0,
-    startTime: (new Date()).getTime()
+    startTime: (new Date()).getTime(),
+    lastPrestigeTime: (new Date()).getTime()
   };
 
 }
@@ -38,49 +38,49 @@ function canActivatePrestige(id) {
 
 function activatePrestige(id) {
 	if (canActivatePrestige(id)) {
-		log(`Prestige ${id + 1}`);		
+		log(`Prestige ${id + 1}`);
 		data.coins = 0;
+    data.lastPrestigeTime = (new Date()).getTime();
 		for (var i = 0; i < id; i++) {
 			data.prestiges[i] = 0;
 		}
 		data.prestiges[id]++;
 		draw();
 		document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
-	}	
+	}
 }
 
 function update() {
-	const curTime = (new Date()).getTime();
-	let deltaTime;
-	if (data.lastTime !== undefined) {
-		deltaTime = (curTime - data.lastTime) / 1000;
-	} else {
-		deltaTime = 1;
-	}
+  const curTime = (new Date()).getTime();
 
-  if (deltaTime > 1) {
-    data.savedTime += deltaTime - 1;
-    deltaTime = 1;
-  }
+  let gain = getGain();
 
-  const gain = getGain();
+  const timeAtPrestige = curTime - data.lastPrestigeTime; //in milliseconds
+  //to reduce rounding error, don't accumulate coins, just calculate it vs 
+  //amount of time at this prestige level
+  data.coins = timeAtPrestige * gain / 1000;
+  
+  //try to activate any prestige possible
+  //but, save any extra time and generate more coin with it at the new gain level
+  let anyActivated;
+  do {
+    anyActivated = false;
+    data.prestiges.forEach( (el, i) => {
+      if (canActivatePrestige(i)) {
+        anyActivated = true;
+        const activationCost = i === 0 ? getRequirement(i) : 0; //only prestige 0 costs coins
+        const remainingTime = (data.coins - activationCost) / gain; //in seconds
+        activatePrestige(i);
+        //once we activate prestige, convert coins collected at previous prestige to coins
+        //collected in the new prestige level
+        gain = getGain();
+        data.coins = remainingTime * gain;
+        data.lastPrestigeTime = curTime - remainingTime * 1000;
+      }
+    });
+  } while(anyActivated);
 
-	data.coins += gain * deltaTime;
-
-  const coinsUntilNextPrestige = Math.max(0, getRequirement(0) - data.coins);
-  const timeUntilNextPrestige = coinsUntilNextPrestige / gain;
-
-  if (data.savedTime >= timeUntilNextPrestige) {
-    data.coins += coinsUntilNextPrestige;
-    data.savedTime -= timeUntilNextPrestige;
-  } else {
-    data.coins += gain * data.savedTime;
-    data.savedTime = 0;
-  }
-
-	localStorage.SHITPOST = JSON.stringify(data);
-	localStorage.lastUpdate = Date.now().toString(10);
-	data.lastTime = curTime;
+  localStorage.SHITPOST = JSON.stringify(data);
 }
 
 function draw() {
@@ -91,7 +91,6 @@ function draw() {
 		document.getElementById("tier"+(i+1)+"a").innerHTML = el;
 		document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+(el+1);
 		if (canActivatePrestige(i)) {
-      activatePrestige(i);
 			document.getElementById("tier"+(i+1)+"btn").disabled = false;
 		} else {
 			document.getElementById("tier"+(i+1)+"btn").disabled = true;
@@ -158,10 +157,6 @@ function timeObjToShortStr(o) {
 window.addEventListener("load",function () {
 	if (localStorage.SHITPOST) {
 		data = JSON.parse(localStorage.SHITPOST)
-	}
-	if (localStorage.lastUpdate) {
-		var delta = Date.now() - parseInt(localStorage.lastUpdate,10)
-		data.coins += Math.floor(getGain() * delta / 1000);
 	}
 	draw();
 	for (var i = 0; i < 10; i++) {
