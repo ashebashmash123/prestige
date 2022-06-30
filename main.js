@@ -17,9 +17,11 @@ function getGain(t) {
   data.prestiges.forEach(function (el) {
     gain *= 1+el;
   });
-  if ((t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365) !== 0) {
-    gain *= (t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365);
-  }
+  [t.m * 60, t.h * 60, t.d * 24, t.y * 365].forEach(function(i) {
+    if (i !== 0) {
+      gain *= i;
+    }
+  });
   return gain;
 }
 
