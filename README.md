@@ -1,5 +1,5 @@
 # prestige
-[Game link](https://asteriskman7.github.io/prestige/)
+Play the game [here](https://ashebashmash123.github.io/prestige/).
 
 Fork of [Makiki's prestige](https://github.com/makiki99/prestige) with the following modifications:
 
