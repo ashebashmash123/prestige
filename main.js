@@ -1,6 +1,3 @@
-let curDate = new Date();
-let playTime = curDate.getTime - data.startTime;
-
 let data;
 
 function reset() {
@@ -15,43 +12,46 @@ function reset() {
 
 reset();
 
+let curDate = new Date();
+let playTime = curDate.getTime - data.startTime;
+
 function getGain(t) {
-	var gain = 1;
-	data.prestiges.forEach(function (el) {
-		gain *= 1+el;
-	})
+  var gain = 1;
+  data.prestiges.forEach(function (el) {
+    gain *= 1+el;
+  })
   gain *= (t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365);
-	return gain;
+  return gain;
 }
 
 function getRequirement(id) {
-	if (id === 0) {
-		return Math.floor(Math.pow(1.5,data.prestiges[0])*10);
-	} else {
-		return Math.pow(id+1,data.prestiges[id]+1)
-	}
+  if (id === 0) {
+    return Math.floor(Math.pow(1.5,data.prestiges[0])*10);
+  } else {
+    return Math.pow(id+1,data.prestiges[id]+1)
+  }
 }
 
 function canActivatePrestige(id) {
-	if (id===0) {
-		return (data.coins >= getRequirement(0));
-	} else {
-		return (data.prestiges[id-1] >= getRequirement(id));
-	}
+  if (id===0) {
+    return (data.coins >= getRequirement(0));
+  } else {
+    return (data.prestiges[id-1] >= getRequirement(id));
+  }
 }
 
 function activatePrestige(id) {
-	if (canActivatePrestige(id)) {
-		log(`Prestige ${id + 1}`);
-		data.coins = 0;
+  if (canActivatePrestige(id)) {
+    log(`Prestige ${id + 1}`);
+    data.coins = 0;
     data.lastPrestigeTime = (new Date()).getTime();
-		for (var i = 0; i < id; i++) {
-			data.prestiges[i] = 0;
-		}
-		data.prestiges[id]++;
-		draw();
-		document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
-	}
+    for (var i = 0; i < id; i++) {
+      data.prestiges[i] = 0;
+    }
+    data.prestiges[id]++;
+    draw();
+    document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
+  }
 }
 
 function update() {
@@ -88,18 +88,18 @@ function update() {
 }
 
 function draw() {
-	document.getElementById("coins").innerHTML = Math.floor(data.coins);
-	document.getElementById("gain").innerHTML = getGain(timeToObj(playTime / 1000));
-	data.prestiges.forEach(function (el, i) {
-		document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
-		document.getElementById("tier"+(i+1)+"a").innerHTML = el;
-		document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+(el+1);
-		if (canActivatePrestige(i)) {
-			document.getElementById("tier"+(i+1)+"btn").disabled = false;
-		} else {
-			document.getElementById("tier"+(i+1)+"btn").disabled = true;
-		}
-	});
+  document.getElementById("coins").innerHTML = Math.floor(data.coins);
+  document.getElementById("gain").innerHTML = getGain(timeToObj(playTime / 1000));
+  data.prestiges.forEach(function (el, i) {
+    document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
+    document.getElementById("tier"+(i+1)+"a").innerHTML = el;
+    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+(el+1);
+    if (canActivatePrestige(i)) {
+      document.getElementById("tier"+(i+1)+"btn").disabled = false;
+    } else {
+      document.getElementById("tier"+(i+1)+"btn").disabled = true;
+    }
+  });
 
   //update total play time
   updatePlayTime();
@@ -163,23 +163,22 @@ function timeObjToShortStr(o) {
 }
 
 window.addEventListener("load",function () {
-	if (localStorage.SHITPOST) {
-		data = JSON.parse(localStorage.SHITPOST)
-	}
-	draw();
-	for (var i = 0; i < 10; i++) {
-		document.getElementById("tier"+(i+1)+"btn").addEventListener(
-			"click",
-			(function(n) {
-				return (function () {
-					activatePrestige(n);
-				})
-			}(i))
-		);
-	}
-	setInterval(function () {
-		update();
-		draw();
-	}, 1000);
-	console.log("interval loaded")
+  if (localStorage.SHITPOST) {
+    data = JSON.parse(localStorage.SHITPOST)
+  }
+  draw();
+  for (var i = 0; i < 10; i++) {
+    document.getElementById("tier"+(i+1)+"btn").addEventListener(
+      "click", (function(n) {
+        return (function () {
+          activatePrestige(n);
+        })
+      }(i))
+    );
+  }
+  setInterval(function () {
+    update();
+    draw();
+  }, 1000);
+  console.log("interval loaded")
 })
