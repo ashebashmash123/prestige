@@ -5,22 +5,22 @@ function reset() {
     coins: 0,
     prestiges: [0,0,0,0,0,0,0,0,0,0],
     startTime: (new Date()).getTime(),
-    lastPrestigeTime: (new Date()).getTime()
+    lastPrestigeTime: (new Date()).getTime(),
+    playTime: {y: 0, d: 0, h: 0, m: 0, s: 0}
   };
 
 }
 
 reset();
 
-let curDate = new Date();
-let playTime = curDate.getTime - data.startTime;
-
 function getGain(t) {
   var gain = 1;
   data.prestiges.forEach(function (el) {
     gain *= 1+el;
   })
-  gain *= (t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365);
+  if((t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365) !== 0) {
+    gain *= (t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365);
+  }
   return gain;
 }
 
@@ -57,7 +57,7 @@ function activatePrestige(id) {
 function update() {
   const curTime = (new Date()).getTime();
 
-  let gain = getGain(timeToObj(playTime / 1000));
+  let gain = getGain(data.playTime);
 
   const timeAtPrestige = curTime - data.lastPrestigeTime; //in milliseconds
   //to reduce rounding error, don't accumulate coins, just calculate it vs 
@@ -77,7 +77,7 @@ function update() {
         activatePrestige(i);
         //once we activate prestige, convert coins collected at previous prestige to coins
         //collected in the new prestige level
-        gain = getGain(timeToObj(playTime / 1000));
+        gain = getGain(data.playTime));
         data.coins = remainingTime * gain;
         data.lastPrestigeTime = curTime - remainingTime * 1000;
       }
@@ -89,7 +89,7 @@ function update() {
 
 function draw() {
   document.getElementById("coins").innerHTML = Math.floor(data.coins);
-  document.getElementById("gain").innerHTML = getGain(timeToObj(playTime / 1000));
+  document.getElementById("gain").innerHTML = getGain(data.playTime);
   data.prestiges.forEach(function (el, i) {
     document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
     document.getElementById("tier"+(i+1)+"a").innerHTML = el;
@@ -102,12 +102,14 @@ function draw() {
   });
 
   //update total play time
-  updatePlayTime();
+  const curDate = new Date();
+  const playTime = curDate.getTime - data.startTime;
+  data.playTime = timeToObj(playTime / 1000);
   document.getElementById('playTimeDiv').innerText = 'Total Play Time: ' + timeObjToLongStr(timeToObj(playTime / 1000));
 
   //update time until next nano
   const prestigeRequirement = getRequirement(0) - data.coins;
-  const gain = getGain(timeToObj(playTime / 1000));
+  const gain = getGain(data.playTime);
   const prestigeTime = prestigeRequirement / gain;
   document.getElementById('nextTimeDiv').innerText = 'Next Prestige In: ' + timeObjToLongStr(timeToObj(prestigeTime));
 	
@@ -117,11 +119,6 @@ function draw() {
 
   //update title bar
   document.title = timeObjToShortStr(timeToObj(prestigeTime));  
-}
-
-function updatePlayTime() {
-  curDate = new Date();
-  playTime = curDate.getTime - data.startTime;
 }
 
 function log(msg) {
