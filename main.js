@@ -8,7 +8,6 @@ function reset() {
     lastPrestigeTime: (new Date()).getTime(),
     playTime: {y: 0, d: 0, h: 0, m: 0, s: 0}
   };
-
 }
 
 reset();
@@ -17,8 +16,8 @@ function getGain(t) {
   var gain = 1;
   data.prestiges.forEach(function (el) {
     gain *= 1+el;
-  })
-  if((t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365) !== 0) {
+  });
+  if ((t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365) !== 0) {
     gain *= (t.m * 60) * (t.h * 60) * (t.d * 24) * (t.y * 365);
   }
   return gain;
@@ -28,7 +27,7 @@ function getRequirement(id) {
   if (id === 0) {
     return Math.floor(Math.pow(1.5,data.prestiges[0])*10);
   } else {
-    return Math.pow(id+1,data.prestiges[id]+1)
+    return Math.pow(id+1,data.prestiges[id]+1);
   }
 }
 
@@ -77,7 +76,7 @@ function update() {
         activatePrestige(i);
         //once we activate prestige, convert coins collected at previous prestige to coins
         //collected in the new prestige level
-        gain = getGain(data.playTime));
+        gain = getGain(data.playTime);
         data.coins = remainingTime * gain;
         data.lastPrestigeTime = curTime - remainingTime * 1000;
       }
@@ -88,22 +87,9 @@ function update() {
 }
 
 function draw() {
-  document.getElementById("coins").innerHTML = Math.floor(data.coins);
-  document.getElementById("gain").innerHTML = getGain(data.playTime);
-  data.prestiges.forEach(function (el, i) {
-    document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
-    document.getElementById("tier"+(i+1)+"a").innerHTML = el;
-    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+(el+1);
-    if (canActivatePrestige(i)) {
-      document.getElementById("tier"+(i+1)+"btn").disabled = false;
-    } else {
-      document.getElementById("tier"+(i+1)+"btn").disabled = true;
-    }
-  });
-
   //update total play time
   const curDate = new Date();
-  const playTime = curDate.getTime - data.startTime;
+  const playTime = curDate.getTime() - data.startTime;
   data.playTime = timeToObj(playTime / 1000);
   document.getElementById('playTimeDiv').innerText = 'Total Play Time: ' + timeObjToLongStr(timeToObj(playTime / 1000));
 
@@ -118,7 +104,20 @@ function draw() {
   document.getElementById('nextDateDiv').innerText = 'Next Prestige At: ' + nextDate.toString();
 
   //update title bar
-  document.title = timeObjToShortStr(timeToObj(prestigeTime));  
+  document.title = timeObjToShortStr(timeToObj(prestigeTime));
+
+  document.getElementById("coins").innerHTML = Math.floor(data.coins);
+  document.getElementById("gain").innerHTML = getGain(data.playTime);
+  data.prestiges.forEach(function (el, i) {
+    document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
+    document.getElementById("tier"+(i+1)+"a").innerHTML = el;
+    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+(el+1);
+    if (canActivatePrestige(i)) {
+      document.getElementById("tier"+(i+1)+"btn").disabled = false;
+    } else {
+      document.getElementById("tier"+(i+1)+"btn").disabled = true;
+    }
+  });
 }
 
 function log(msg) {
@@ -177,5 +176,5 @@ window.addEventListener("load",function () {
     update();
     draw();
   }, 1000);
-  console.log("interval loaded")
-})
+  console.log("interval loaded");
+});
