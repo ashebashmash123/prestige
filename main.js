@@ -19,14 +19,14 @@ function getGain(t) {
 	prestigeMult = 1;
 	playTimeMult = 1;
   var gain = 1;
-  data.prestiges.forEach(function (el) {
-    gain *= 1+el;
-	prestigeMult *= 1+el;
+  data.prestiges.forEach(function(el, i) {
+    gain *= (i+2)**el;
+	prestigeMult *= (i+2)**el;
   });
-  [60 ** t.m, 60 ** t.h, 24 ** t.d, 365 ** t.y].forEach(function(i) {
-    if (i !== 0) {
-      gain *= i;
-	  playTimeMult *= i;
+  [60 ** t.m, 60 ** t.h, 24 ** t.d, 365 ** t.y].forEach(function(el) {
+    if (el !== 0) {
+      gain *= el;
+	  playTimeMult *= el;
     }
   });
   return gain;
