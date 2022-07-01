@@ -122,7 +122,7 @@ function draw() {
   data.prestiges.forEach(function (el, i) {
     document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
     document.getElementById("tier"+(i+1)+"a").innerHTML = el;
-    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+(el+1);
+    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+((i+2)**el);
     if (canActivatePrestige(i)) {
       document.getElementById("tier"+(i+1)+"btn").disabled = false;
     } else {
