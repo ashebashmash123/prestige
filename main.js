@@ -23,7 +23,7 @@ function getGain(t) {
     gain *= 1+el;
 	prestigeMult *= 1+el;
   });
-  [t.m * 60, t.h * 60, t.d * 24, t.y * 365].forEach(function(i) {
+  [60 ** t.m, 60 ** t.h, 24 ** t.d, 365 ** t.y].forEach(function(i) {
     if (i !== 0) {
       gain *= i;
 	  playTimeMult *= i;
