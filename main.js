@@ -12,14 +12,21 @@ function reset() {
 
 reset();
 
+var prestigeMult = 1;
+var playTimeMult = 1;
+
 function getGain(t) {
+	prestigeMult = 1;
+	playTimeMult = 1;
   var gain = 1;
   data.prestiges.forEach(function (el) {
     gain *= 1+el;
+	prestigeMult *= 1+el;
   });
   [t.m * 60, t.h * 60, t.d * 24, t.y * 365].forEach(function(i) {
     if (i !== 0) {
       gain *= i;
+	  playTimeMult *= i;
     }
   });
   return gain;
@@ -110,6 +117,8 @@ function draw() {
 
   document.getElementById("coins").innerHTML = Math.floor(data.coins);
   document.getElementById("gain").innerHTML = getGain(data.playTime);
+  document.getElementById("prestigeMult").innerHTML = prestigeMult;
+  document.getElementById("playTimeMult").innerHTML = playTimeMult;
   data.prestiges.forEach(function (el, i) {
     document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
     document.getElementById("tier"+(i+1)+"a").innerHTML = el;
@@ -160,9 +169,14 @@ function timeObjToShortStr(o) {
   return `${o.m}m:${this.leftPad(Math.floor(o.s), '0', 2)}s`;
 }
 
+function resetGame() {
+	window.localStorage.clear();
+	window.location.reload();
+}
+
 window.addEventListener("load",function () {
   if (localStorage.SHITPOST) {
-    data = JSON.parse(localStorage.SHITPOST)
+    data = JSON.parse(localStorage.SHITPOST);
   }
   draw();
   for (var i = 0; i < 10; i++) {

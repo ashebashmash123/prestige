@@ -7,7 +7,7 @@
 <body>
   <div>
     <h1><span id="coins">0</span> coins</h1>
-    <h3><span id="gain">0</span> coins/second</h3>
+    <h3><span id="gain">0</span> coins/second (x<span id="prestigeMult"></span> from prestiges) (x<span id="playTimeMult"></span> from play time)</h3>
     <div id='displayDiv'>
       <div id='playTimeDiv'></div>
       <div id='nextTimeDiv'></div>
@@ -103,6 +103,7 @@
       <td><button id="tier10btn">Activate</button></td>
     </tr>
   </table>
+  <button id="reset" onclick="resetGame()">Reset Game</button>
   <pre id='log'></pre>
 </body>
 </html>
