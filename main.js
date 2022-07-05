@@ -20,8 +20,8 @@ function getGain(t) {
 	playTimeMult = 1;
   var gain = 1;
   data.prestiges.forEach(function(el, i) {
-    gain *= (i+2)**el;
-	prestigeMult *= (i+2)**el;
+    gain *= (i+1)*el+1;
+	prestigeMult *= (i+1)*el+1;
   });
   [60 ** t.m, 60 ** t.h, 24 ** t.d, 365 ** t.y].forEach(function(el) {
     if (el !== 0) {
@@ -34,9 +34,9 @@ function getGain(t) {
 
 function getRequirement(id) {
   if (id === 0) {
-    return Math.floor(Math.pow(1.5,data.prestiges[0])*10);
+    return Math.floor(1.5**data.prestiges[0]*10);
   } else {
-    return Math.pow(id+1,data.prestiges[id]+1);
+    return 2**(data.prestiges[id]+1);
   }
 }
 
@@ -122,7 +122,7 @@ function draw() {
   data.prestiges.forEach(function (el, i) {
     document.getElementById("tier"+(i+1)+"cost").innerHTML = getRequirement(i);
     document.getElementById("tier"+(i+1)+"a").innerHTML = el;
-    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+((i+2)**el);
+    document.getElementById("tier"+(i+1)+"mul").innerHTML = "x"+((i+1)*el+1);
     if (canActivatePrestige(i)) {
       document.getElementById("tier"+(i+1)+"btn").disabled = false;
     } else {
