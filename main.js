@@ -51,11 +51,7 @@ function canActivatePrestige(id) {
 function activatePrestige(id) {
   if (canActivatePrestige(id)) {
     log(`Prestige ${id + 1}`);
-    data.coins = 0;
     data.lastPrestigeTime = (new Date()).getTime();
-    for (var i = 0; i < id; i++) {
-      data.prestiges[i] = 0;
-    }
     data.prestiges[id]++;
     draw();
     document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
@@ -80,8 +76,8 @@ function update() {
     data.prestiges.forEach( (el, i) => {
       if (canActivatePrestige(i)) {
         anyActivated = true;
-        const activationCost = i === 0 ? getRequirement(i) : 0; //only prestige 0 costs coins
-        const remainingTime = (data.coins - activationCost) / gain; //in seconds
+        const activationCost = i === 0 ? getRequirement(0) : 0; //only prestige 0 costs coins
+        const remainingTime = data.coins / gain; //in seconds
         activatePrestige(i);
         //once we activate prestige, convert coins collected at previous prestige to coins
         //collected in the new prestige level
