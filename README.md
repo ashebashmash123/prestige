@@ -20,3 +20,4 @@ My modifications:
 1. Play time multipliers
 1. Total prestige and play time multiplier display
 1. Buffed prestige multipliers
+1. No spending
