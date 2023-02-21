@@ -46,7 +46,9 @@ function activatePrestige(id) {
 		}
 		data.prestiges[id]++;
 		draw();
-		document.dispatchEvent(new CustomEvent('prestige', {detail: id}));
+		
+		//delay slightly to allow other code to run and update values before taking any actions on them
+		setTimeout( () => {document.dispatchEvent(new CustomEvent('prestige', {detail: id}));}, 1500 );
 	}
 }
 
